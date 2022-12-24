@@ -22,8 +22,7 @@ contract Todo is Context {
     constructor() {}
 
     modifier validID(address _addr, uint _id) {
-        uint _upperBound = addressToTasks[_addr].length;
-        if (_id > _upperBound) revert Todo_InvalidID();
+        if (_id >= addressToTasks[_addr].length) revert Todo_InvalidID();
         _;
     }
 
@@ -39,15 +38,16 @@ contract Todo is Context {
         return true;
     }
 
-    function completeTask(
+    function markCompleted(
         uint _id
     ) public validID(_msgSender(), _id) returns (bool) {
         addressToTasks[_msgSender()][_id].status = true;
+        emit TaskCompleted(_msgSender(), _id);
         return true;
     }
 
-    function getTasks(address _addr) public view returns (Task[] memory) {
-        return addressToTasks[_addr];
+    function getTasks() public view returns (Task[] memory) {
+        return addressToTasks[_msgSender()];
     }
 
     function _add(

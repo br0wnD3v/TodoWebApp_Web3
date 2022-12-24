@@ -13,7 +13,7 @@ async function main() {
   const txn2 = await Todo.addTask("This is My Second Task");
   const txn3 = await Todo.addTask("This is My Third Task");
 
-  const tasks = await Todo.getTasks(owner.address);
+  const tasks = await Todo.getTasks();
   tasks.forEach((element) => {
     console.log("\n");
     console.log(element.id);
