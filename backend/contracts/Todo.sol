@@ -14,6 +14,7 @@ contract Todo is Context {
     struct Task {
         uint id;
         string description;
+        uint createdAt;
         bool status;
     }
 
@@ -58,7 +59,12 @@ contract Todo is Context {
 
         // console.log(_newId);
 
-        Task memory newTask = Task(_newId, _description, false);
+        Task memory newTask = Task(
+            _newId,
+            _description,
+            block.timestamp,
+            false
+        );
         addressToTasks[_addr].push(newTask);
 
         emit TaskAdded(_addr, _newId);
