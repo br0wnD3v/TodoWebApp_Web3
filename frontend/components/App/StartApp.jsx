@@ -1,20 +1,41 @@
+import CreateTaskCards from "./CreateTaskCards";
+
 import { useContext, useState, useEffect } from "react";
 import { SignerContext } from "../../contexts/context";
 import { ethers } from "ethers";
 
 import Image from "next/image";
 import logo from "../../public/logo.png";
+import loading from "../../public/loading.gif";
 
 import { todoAddress, todoABI } from "../../constants/info";
 
 export default function StartApp() {
   const { signer } = useContext(SignerContext);
+
   const [mode, setMode] = useState(0);
+  const [dataFetched, setDataFetched] = useState([]);
+  const [readyToSend, setReadyToSend] = useState(false);
 
   async function changeMode(val) {
     setMode(val);
     console.log(val);
   }
+
+  const delay = (time) => {
+    return new Promise((res) => {
+      setTimeout(res, time * 1000);
+    });
+  };
+
+  useEffect(() => {
+    if (dataFetched.length > 0) {
+      console.log(dataFetched);
+      delay(0.1).then(() => {
+        setReadyToSend(true);
+      });
+    }
+  }, [dataFetched]);
 
   async function getData() {
     const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
@@ -23,8 +44,9 @@ export default function StartApp() {
 
     const Todo = new ethers.Contract(todoAddress, todoABI, signer);
 
-    const data = await Todo.getTasks();
-    console.log(data);
+    await Todo.getTasks().then((result) => {
+      setDataFetched(result);
+    });
   }
 
   useEffect(() => {
@@ -40,20 +62,31 @@ export default function StartApp() {
         <section
           style={{
             borderBottom: "1px solid white",
-            height: "150px",
+            height: "165px",
             clear: "both",
           }}
         >
           <Image
             src={logo}
-            height={110}
-            width={140}
+            height={130}
+            width={110}
             alt="Logo"
-            style={{ float: "left", display: "inline-block", margin: "20px" }}
+            style={{
+              float: "left",
+              display: "inline-block",
+              marginLeft: "40px",
+              marginTop: "10px",
+            }}
           />
-          <p style={{ display: "inline-block", margin: "65px 40px" }}>
-            TODO Application Powered By Blockchain
-          </p>
+          <h1
+            style={{
+              display: "inline-block",
+              marginTop: "65px",
+              marginLeft: "30px",
+            }}
+          >
+            <i>Powered By Blockchain</i>
+          </h1>
           <p
             className="goldText"
             style={{
@@ -62,7 +95,8 @@ export default function StartApp() {
               float: "right",
               display: "inline-block",
               padding: "20px",
-              margin: "40px 25px",
+              marginTop: "45px",
+              marginRight: "25px",
             }}
           >
             {signer.slice(0, 5) + "..." + signer.slice(-4)}
@@ -76,7 +110,7 @@ export default function StartApp() {
             alignItems: "center",
             float: "left",
             height: "100vh",
-            width: "200px",
+            width: "20%",
             borderRight: "1px solid white",
           }}
         >
@@ -100,15 +134,42 @@ export default function StartApp() {
           </div>
         </section>
         <section
-          style={{ margin: "50px", float: "left", display: "inline-block" }}
+          style={{
+            marginTop: "60px",
+            marginLeft: "60px",
+            float: "left",
+            display: "inline-block",
+            width: "75%",
+          }}
         >
-          <h1 className="goldText" style={{ fontSize: "500%" }}>
+          <h1
+            className="goldText"
+            style={{
+              fontSize: "500%",
+              marginBottom: "20px",
+              marginLeft: "10px",
+            }}
+          >
             <i>Tasks</i>
           </h1>
-          {mode == 0 ? (
-            <>Mode 0</>
+          {!readyToSend ? (
+            <div
+              style={{
+                margin: "auto",
+                textAlign: "center",
+                marginTop: "100px",
+              }}
+            >
+              <Image src={loading} alt="Loading..." height={200} width={200} />
+            </div>
           ) : (
-            <>{mode == 1 ? <>Mode 1</> : <>Mode 2</>}</>
+            <>
+              {mode == 0 ? (
+                <CreateTaskCards data={dataFetched} />
+              ) : (
+                <>{mode == 1 ? <>Mode 1</> : <>Mode 2</>}</>
+              )}
+            </>
           )}
         </section>
       </main>

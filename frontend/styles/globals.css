@@ -141,3 +141,22 @@ a {
 .taskButton:hover {
   background-color: #372912;
 }
+
+.taskStatus {
+  cursor: pointer;
+  font-size: 110%;
+  font-family: AgrandirRegular;
+  position: absolute;
+  bottom: 15px;
+  border-radius: 5px;
+  border: 3px solid #fbbb54;
+  background-color: #fbbb54;
+  color: black;
+  padding: 10px 10px 7px 10px;
+  transition: 0.2s;
+}
+
+.taskStatus:hover {
+  color: #fbbb54;
+  background-color: black;
+}
