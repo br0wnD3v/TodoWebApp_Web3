@@ -115,7 +115,7 @@ a {
 }
 
 .goldText {
-  color: #fbbb54; /*if no support for background-clip*/
+  color: #fbbb54;
 }
 
 .signerAddress {

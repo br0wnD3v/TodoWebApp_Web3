@@ -16,7 +16,16 @@ export default function StartApp() {
     console.log(val);
   }
 
-  async function getData() {}
+  async function getData() {
+    const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+    await provider.send("eth_requestAccounts", []);
+    const signer = provider.getSigner();
+
+    const Todo = new ethers.Contract(todoAddress, todoABI, signer);
+
+    const data = await Todo.getTasks();
+    console.log(data);
+  }
 
   useEffect(() => {
     async function execute() {
@@ -96,6 +105,11 @@ export default function StartApp() {
           <h1 className="goldText" style={{ fontSize: "500%" }}>
             <i>Tasks</i>
           </h1>
+          {mode == 0 ? (
+            <>Mode 0</>
+          ) : (
+            <>{mode == 1 ? <>Mode 1</> : <>Mode 2</>}</>
+          )}
         </section>
       </main>
     </>
