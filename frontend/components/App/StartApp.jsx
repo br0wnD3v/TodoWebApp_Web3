@@ -164,13 +164,7 @@ export default function StartApp() {
               <Image src={loading} alt="Loading..." height={200} width={200} />
             </div>
           ) : (
-            <>
-              {mode == 0 ? (
-                <CreateTaskCards data={dataFetched} />
-              ) : (
-                <>{mode == 1 ? <>Mode 1</> : <>Mode 2</>}</>
-              )}
-            </>
+            <CreateTaskCards data={dataFetched} mode={mode} />
           )}
         </section>
       </main>
