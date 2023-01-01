@@ -45,7 +45,7 @@ const todoABI = [
         type: "uint256",
       },
     ],
-    name: "TaskCompleted",
+    name: "TaskRemoved",
     type: "event",
   },
   {
@@ -63,8 +63,14 @@ const todoABI = [
         name: "",
         type: "uint256",
       },
+      {
+        indexed: false,
+        internalType: "bool",
+        name: "status",
+        type: "bool",
+      },
     ],
-    name: "TaskRemoved",
+    name: "TaskStatusChanged",
     type: "event",
   },
   {
@@ -129,7 +135,7 @@ const todoABI = [
         type: "uint256",
       },
     ],
-    name: "markCompleted",
+    name: "invertStatus",
     outputs: [
       {
         internalType: "bool",

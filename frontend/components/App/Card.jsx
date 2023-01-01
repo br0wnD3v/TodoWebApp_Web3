@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { todoABI, todoAddress } from "../../constants/info";
+
+import Image from "next/image";
+import bin from "../../public/bin.png";
 
 export default function Card(props) {
   const moment = require("moment");
@@ -11,12 +14,7 @@ export default function Card(props) {
   const [status, setStatus] = useState(false);
 
   const [dataFetched, setDataFetched] = useState(false);
-
-  useEffect(() => {
-    if (dataFetched) {
-      console.log(serialNumber, task, timeStamp, status);
-    }
-  }, [dataFetched]);
+  const [visibility, setVisibility] = useState(true);
 
   const delay = (time) => {
     return new Promise((res) => {
@@ -24,12 +22,36 @@ export default function Card(props) {
     });
   };
 
+  async function deleteTask() {
+    const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+    await provider.send("eth_requestAccounts", []);
+    const signer = provider.getSigner();
+
+    const Todo = new ethers.Contract(todoAddress, todoABI, signer);
+
+    const _id = BigNumber.from(serialNumber - 1);
+    const txn = await Todo.removeTask(_id);
+    const receipt = await txn.wait(1);
+
+    if (receipt.status === 1) {
+      setVisibility(false);
+    }
+  }
+
   async function changeStatus() {
     const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
     await provider.send("eth_requestAccounts", []);
     const signer = provider.getSigner();
 
     const Todo = new ethers.Contract(todoAddress, todoABI, signer);
+
+    const _id = BigNumber.from(serialNumber - 1);
+    const txn = await Todo.invertStatus(_id);
+    const receipt = await txn.wait(1);
+
+    if (receipt.status === 1) {
+      setStatus(!status);
+    }
   }
 
   async function updateState() {
@@ -59,37 +81,29 @@ export default function Card(props) {
 
   return (
     <>
-      {dataFetched ? (
+      {dataFetched && visibility ? (
         <>
           <div
-            style={{
-              backgroundColor: "black",
-              borderRadius: "10px",
-              border: "2px solid #fbbb54",
-              height: "300px",
-              width: "300px",
-              display: "inline-block",
-              marginLeft: "25px",
-              marginRight: "25px",
-              marginBottom: "25px",
-              padding: "15px",
-
-              position: "relative",
-            }}
+            className="card"
+            style={
+              status
+                ? { border: "2px solid #84de5d" }
+                : { border: "2px solid #fbbb54" }
+            }
           >
-            <h2
+            {/* <h2
               style={{
                 display: "inline-block",
                 marginBottom: "20px",
               }}
             >
               {serialNumber}
-            </h2>
-            <p style={{ display: "inline-block", float: "right" }}>
-              {timeStamp}
-            </p>
+            </h2> */}
+            <p style={{ float: "right" }}>{timeStamp}</p>
             <p
               style={{
+                clear: "both",
+                marginTop: "50px",
                 height: "50%",
                 fontSize: "140%",
                 overflowX: "hidden",
@@ -98,8 +112,22 @@ export default function Card(props) {
             >
               {task}
             </p>
-            <button className="taskStatus" onClick={() => changeStatus()}>
-              {status ? <>Completed</> : <>Pending</>}
+
+            {status ? (
+              <button
+                className="taskStatusCompleted"
+                onClick={() => changeStatus()}
+              >
+                Completed
+              </button>
+            ) : (
+              <button className="taskStatus" onClick={() => changeStatus()}>
+                Pending
+              </button>
+            )}
+
+            <button onClick={() => deleteTask()} className="binButton">
+              <Image src={bin} height={20} width={20} />
             </button>
           </div>
         </>

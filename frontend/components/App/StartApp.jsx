@@ -111,7 +111,6 @@ export default function StartApp() {
             float: "left",
             height: "100vh",
             width: "20%",
-            borderRight: "1px solid white",
           }}
         >
           <div
@@ -135,11 +134,13 @@ export default function StartApp() {
         </section>
         <section
           style={{
-            marginTop: "60px",
-            marginLeft: "60px",
+            borderLeft: "1px solid white",
+            paddingTop: "60px",
+            paddingLeft: "60px",
             float: "left",
             display: "inline-block",
             width: "75%",
+            minHeight: "100vh",
           }}
         >
           <h1

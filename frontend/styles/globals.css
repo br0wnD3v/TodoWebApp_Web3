@@ -160,3 +160,55 @@ a {
   color: #fbbb54;
   background-color: black;
 }
+
+.taskStatusCompleted {
+  cursor: pointer;
+  font-size: 110%;
+  font-family: AgrandirRegular;
+  position: absolute;
+  bottom: 15px;
+  border-radius: 5px;
+  border: 3px solid #84de5d;
+  background-color: #84de5d;
+  color: black;
+  padding: 10px 10px 7px 10px;
+  transition: 0.2s;
+}
+
+.taskStatusCompleted:hover {
+  color: #84de5d;
+  background-color: black;
+}
+
+.binButton {
+  cursor: pointer;
+  padding: 10px 10px 7px 10px;
+  position: absolute;
+  bottom: 15px;
+  left: 242px;
+  background-color: #dd5254;
+  border-width: 0;
+  border-radius: 5px;
+  transition: 0.2s;
+}
+.binButton:hover {
+  background-color: #af4143;
+}
+
+.card {
+  background-color: black;
+  border-radius: 7px;
+  height: 300px;
+  width: 300px;
+  display: inline-block;
+  margin-left: 22px;
+  margin-right: 22px;
+  margin-bottom: 44px;
+  padding: 15px;
+  position: relative;
+  transition: 0.2s;
+}
+
+.card:hover {
+  box-shadow: 0 0 10px 2px rgb(255, 255, 255);
+}
