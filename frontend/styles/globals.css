@@ -212,3 +212,28 @@ a {
 .card:hover {
   box-shadow: 0 0 10px 2px rgb(255, 255, 255);
 }
+
+.addButton {
+  font-family: AgrandirRegular;
+  float: right;
+  font-size: larger;
+  background-color: white;
+  color: black;
+  padding: 20px 22px 15px 22px;
+  margin-top: 10px;
+  margin-right: 45px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.addButton:hover {
+  background-color: #fbbb54;
+}
+
+.modalBox {
+}
+
+.modalInner {
+  margin: auto;
+}

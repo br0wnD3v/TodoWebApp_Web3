@@ -1,3 +1,4 @@
+import Popup from "reactjs-popup";
 import CreateTaskCards from "./CreateTaskCards";
 
 import { useContext, useState, useEffect } from "react";
@@ -11,6 +12,8 @@ import loading from "../../public/loading.gif";
 import { todoAddress, todoABI } from "../../constants/info";
 
 export default function StartApp() {
+  var Todo;
+
   const { signer } = useContext(SignerContext);
 
   const [mode, setMode] = useState(0);
@@ -38,19 +41,33 @@ export default function StartApp() {
   }, [dataFetched]);
 
   async function getData() {
-    const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
-    await provider.send("eth_requestAccounts", []);
-    const signer = provider.getSigner();
-
-    const Todo = new ethers.Contract(todoAddress, todoABI, signer);
+    // const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+    // await provider.send("eth_requestAccounts", []);
+    // const signer = provider.getSigner();
+    // const Todo = new ethers.Contract(todoAddress, todoABI, signer);
 
     await Todo.getTasks().then((result) => {
       setDataFetched(result);
     });
   }
 
+  async function addTask() {
+    // const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+    // await provider.send("eth_requestAccounts", []);
+    // const signer = provider.getSigner();
+    // await Todo.
+  }
+
   useEffect(() => {
     async function execute() {
+      const provider = new ethers.providers.Web3Provider(
+        window.ethereum,
+        "any"
+      );
+      await provider.send("eth_requestAccounts", []);
+      const signer = provider.getSigner();
+
+      Todo = new ethers.Contract(todoAddress, todoABI, signer);
       await getData();
     }
     execute();
@@ -143,16 +160,37 @@ export default function StartApp() {
             minHeight: "100vh",
           }}
         >
-          <h1
-            className="goldText"
-            style={{
-              fontSize: "500%",
-              marginBottom: "20px",
-              marginLeft: "10px",
-            }}
-          >
-            <i>Tasks</i>
-          </h1>
+          <div>
+            <h1
+              className="goldText"
+              style={{
+                display: "inline-block",
+                fontSize: "500%",
+                marginBottom: "20px",
+                marginLeft: "10px",
+              }}
+            >
+              <i>Tasks</i>
+            </h1>
+            <Popup trigger={<button className="addButton">+ Add</button>} modal>
+              <div className="modalBox">
+                <div className="modalInner">
+                  <form method="POST">
+                    <input
+                      type="text"
+                      name="taskDescription"
+                      placeholder="Enter the task..."
+                      style={{ overflowY: "scroll" }}
+                    />
+                    <input type="submit"></input>
+                  </form>
+                </div>
+              </div>
+            </Popup>
+            {/* <button className="addButton" onClick={() => addTask()}>
+              + Add
+            </button> */}
+          </div>
           {!readyToSend ? (
             <div
               style={{

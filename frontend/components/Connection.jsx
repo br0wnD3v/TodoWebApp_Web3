@@ -1,11 +1,13 @@
 import { useState, useEffect, useContext } from "react";
 import { SignerContext } from "../contexts/context";
 
-export default function Connection() {
-  const { signer, setSigner } = useContext(SignerContext);
-  const [onGoerli, setOnGoerli] = useState(false);
+import { ethers } from "ethers";
 
-  const targetNetworkId = "5";
+export default function Connection() {
+  const { setSigner } = useContext(SignerContext);
+  const [onHardhat, setOnHardhat] = useState(false);
+
+  const targetNetworkId = "31337";
 
   async function execute() {
     await connect();
@@ -28,9 +30,9 @@ export default function Connection() {
     try {
       await ethereum.request({
         method: "wallet_switchEthereumChain",
-        params: [{ chainId: "0x05" }],
+        params: [{ chainId: "0x7A69" }],
       });
-      setOnGoerli(true);
+      setOnHardhat(true);
     } catch (switchError) {
       if (switchError.code === 4902) {
         try {
@@ -38,19 +40,19 @@ export default function Connection() {
             method: "wallet_addEthereumChain",
             params: [
               {
-                chainId: "0x05",
-                chainName: "Goerli Testnet",
-                rpcUrls: ["https://goerli.infura.io/v3/"],
+                chainId: "0x5",
+                chainName: "Hardhat Testnet",
+                rpcUrls: ["http://127.0.0.1:8545"],
                 nativeCurrency: {
                   name: "Ethereum",
                   symbol: "ETH", // 2-6 characters long
                   decimals: 18,
                 },
-                blockExplorerUrls: ["https://goerli.etherscan.io"],
+                blockExplorerUrls: [""],
               },
             ],
           });
-          setOnGoerli(true);
+          setOnHardhat(true);
         } catch (addError) {
           console.error(addError);
         }
@@ -64,14 +66,16 @@ export default function Connection() {
         window.ethereum,
         "any"
       );
-      await provider.send("eth_requestAccounts", []);
+      await provider.send("eth_requestAccounts", []).catch((error) => {
+        if (error.code == 4001) console.error("User denied connection.");
+      });
       const signer = provider.getSigner();
       const address = await signer.getAddress();
 
       setSigner(address);
 
-      setOnGoerli(await checkNetwork());
-      if (!onGoerli) changeChains();
+      setOnHardhat(await checkNetwork());
+      if (!onHardhat) changeChains();
     } catch (err) {
       console.error(err);
     }
@@ -103,7 +107,7 @@ export default function Connection() {
   return (
     <>
       <button
-        style={{ margin: "20px", padding: "20px", borderRadius: "5px" }}
+        style={{ margin: "20px", padding: "10px", borderRadius: "5px" }}
         onClick={() => connect()}
       >
         Connect

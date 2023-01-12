@@ -2,10 +2,14 @@ import { useEffect, useState } from "react";
 import { BigNumber, ethers } from "ethers";
 import { todoABI, todoAddress } from "../../constants/info";
 
+import { motion } from "framer-motion";
+
 import Image from "next/image";
 import bin from "../../public/bin.png";
 
 export default function Card(props) {
+  var Todo;
+
   const moment = require("moment");
 
   const [serialNumber, setSerialNumber] = useState(-1);
@@ -23,11 +27,11 @@ export default function Card(props) {
   };
 
   async function deleteTask() {
-    const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
-    await provider.send("eth_requestAccounts", []);
-    const signer = provider.getSigner();
+    // const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+    // await provider.send("eth_requestAccounts", []);
+    // const signer = provider.getSigner();
 
-    const Todo = new ethers.Contract(todoAddress, todoABI, signer);
+    // const Todo = new ethers.Contract(todoAddress, todoABI, signer);
 
     const _id = BigNumber.from(serialNumber - 1);
     const txn = await Todo.removeTask(_id);
@@ -39,11 +43,11 @@ export default function Card(props) {
   }
 
   async function changeStatus() {
-    const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
-    await provider.send("eth_requestAccounts", []);
-    const signer = provider.getSigner();
+    // const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+    // await provider.send("eth_requestAccounts", []);
+    // const signer = provider.getSigner();
 
-    const Todo = new ethers.Contract(todoAddress, todoABI, signer);
+    // const Todo = new ethers.Contract(todoAddress, todoABI, signer);
 
     const _id = BigNumber.from(serialNumber - 1);
     const txn = await Todo.invertStatus(_id);
@@ -73,6 +77,14 @@ export default function Card(props) {
 
   useEffect(() => {
     async function execute() {
+      const provider = new ethers.providers.Web3Provider(
+        window.ethereum,
+        "any"
+      );
+      await provider.send("eth_requestAccounts", []);
+      const signer = provider.getSigner();
+      Todo = new ethers.Contract(todoAddress, todoABI, signer);
+
       await updateState();
     }
 
@@ -83,7 +95,14 @@ export default function Card(props) {
     <>
       {dataFetched && visibility ? (
         <>
-          <div
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{
+              duration: 0.5,
+              type: "spring",
+              ease: "easeInOut",
+            }}
             className="card"
             style={
               status
@@ -125,11 +144,10 @@ export default function Card(props) {
                 Pending
               </button>
             )}
-
             <button onClick={() => deleteTask()} className="binButton">
               <Image src={bin} height={20} width={20} />
             </button>
-          </div>
+          </motion.div>
         </>
       ) : (
         <></>
