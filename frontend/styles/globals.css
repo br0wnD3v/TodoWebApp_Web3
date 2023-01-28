@@ -231,9 +231,12 @@ a {
   background-color: #fbbb54;
 }
 
-.modalBox {
-}
-
-.modalInner {
-  margin: auto;
+.submitButton {
+  cursor: pointer;
+  font-family: AgrandirRegular;
+  font-weight: bold;
+  font-size: 110%;
+  padding: 15px 8px 8px 8px;
+  width: 30%;
+  margin: 20px 205px;
 }

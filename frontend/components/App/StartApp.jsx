@@ -1,10 +1,13 @@
 import Popup from "reactjs-popup";
+import "reactjs-popup/dist/index.css";
+
+import { motion } from "framer-motion";
+
 import CreateTaskCards from "./CreateTaskCards";
 
-import { useContext, useState, useEffect } from "react";
 import { SignerContext } from "../../contexts/context";
 import { ethers } from "ethers";
-
+import { useContext, useState, useEffect } from "react";
 import Image from "next/image";
 import logo from "../../public/logo.png";
 import loading from "../../public/loading.gif";
@@ -17,12 +20,36 @@ export default function StartApp() {
   const { signer } = useContext(SignerContext);
 
   const [mode, setMode] = useState(0);
+  const [submitted, setSubmitted] = useState(false);
   const [dataFetched, setDataFetched] = useState([]);
   const [readyToSend, setReadyToSend] = useState(false);
 
-  async function changeMode(val) {
-    setMode(val);
-    console.log(val);
+  const inputStyle = {
+    marginTop: "35px",
+    marginLeft: "85px",
+    width: "70%",
+    borderRadius: "5px",
+    padding: "15px",
+  };
+
+  const contentDiv = {
+    height: "200px",
+    width: "600px",
+    borderRadius: "10px",
+  };
+
+  const successStyle = {
+    color: "black",
+    marginTop: "71px",
+    marginLeft: "215px",
+  };
+
+  function changeMode(val) {
+    if (!Todo) {
+      execute().then(() => {
+        setMode(val);
+      });
+    }
   }
 
   const delay = (time) => {
@@ -33,7 +60,6 @@ export default function StartApp() {
 
   useEffect(() => {
     if (dataFetched.length > 0) {
-      console.log(dataFetched);
       delay(0.1).then(() => {
         setReadyToSend(true);
       });
@@ -41,35 +67,41 @@ export default function StartApp() {
   }, [dataFetched]);
 
   async function getData() {
-    // const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
-    // await provider.send("eth_requestAccounts", []);
-    // const signer = provider.getSigner();
-    // const Todo = new ethers.Contract(todoAddress, todoABI, signer);
-
     await Todo.getTasks().then((result) => {
       setDataFetched(result);
     });
   }
 
-  async function addTask() {
-    // const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
-    // await provider.send("eth_requestAccounts", []);
-    // const signer = provider.getSigner();
-    // await Todo.
+  const addTask = async (event) => {
+    event.preventDefault();
+
+    if (!Todo) {
+      execute().then(async () => {
+        var desc = event.target.task.value;
+        desc = desc.toString();
+
+        const txn = await Todo.addTask(desc);
+        const receipt = await txn.wait(1);
+
+        if (receipt.status == 1) {
+          setSubmitted(true);
+          await delay(5);
+          setSubmitted(false);
+        }
+      });
+    }
+  };
+
+  async function execute() {
+    const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+    await provider.send("eth_requestAccounts", []);
+    const signer = provider.getSigner();
+
+    Todo = new ethers.Contract(todoAddress, todoABI, signer);
+    await getData();
   }
 
   useEffect(() => {
-    async function execute() {
-      const provider = new ethers.providers.Web3Provider(
-        window.ethereum,
-        "any"
-      );
-      await provider.send("eth_requestAccounts", []);
-      const signer = provider.getSigner();
-
-      Todo = new ethers.Contract(todoAddress, todoABI, signer);
-      await getData();
-    }
     execute();
   }, []);
 
@@ -172,24 +204,44 @@ export default function StartApp() {
             >
               <i>Tasks</i>
             </h1>
-            <Popup trigger={<button className="addButton">+ Add</button>} modal>
-              <div className="modalBox">
-                <div className="modalInner">
-                  <form method="POST">
-                    <input
-                      type="text"
-                      name="taskDescription"
-                      placeholder="Enter the task..."
-                      style={{ overflowY: "scroll" }}
-                    />
-                    <input type="submit"></input>
-                  </form>
-                </div>
+            <Popup
+              contentStyle={contentDiv}
+              trigger={<button className="addButton">+ Add</button>}
+              modal
+            >
+              <div className="modal">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ ease: "easeOut", duration: 0.2 }}
+                  className="content"
+                >
+                  {!submitted ? (
+                    <>
+                      <form method="POST" onSubmit={addTask}>
+                        <input
+                          style={inputStyle}
+                          type="text"
+                          name="task"
+                          placeholder="Enter the task..."
+                          required
+                        />
+                        <br />
+                        <input
+                          type="submit"
+                          className="submitButton"
+                          value="Submit"
+                        ></input>
+                      </form>
+                    </>
+                  ) : (
+                    <>
+                      <h1 style={successStyle}>Success!</h1>
+                    </>
+                  )}
+                </motion.div>
               </div>
             </Popup>
-            {/* <button className="addButton" onClick={() => addTask()}>
-              + Add
-            </button> */}
           </div>
           {!readyToSend ? (
             <div

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { BigNumber, ethers } from "ethers";
-import { todoABI, todoAddress } from "../../constants/info";
+import { todoABI, todoAddress } from "../../constants/info.js";
 
 import { motion } from "framer-motion";
 
@@ -8,9 +8,8 @@ import Image from "next/image";
 import bin from "../../public/bin.png";
 
 export default function Card(props) {
-  var Todo;
-
   const moment = require("moment");
+  var Todo;
 
   const [serialNumber, setSerialNumber] = useState(-1);
   const [task, setTask] = useState("");
@@ -27,38 +26,41 @@ export default function Card(props) {
   };
 
   async function deleteTask() {
-    // const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
-    // await provider.send("eth_requestAccounts", []);
-    // const signer = provider.getSigner();
+    const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+    await provider.send("eth_requestAccounts", []);
+    const signer = provider.getSigner();
 
-    // const Todo = new ethers.Contract(todoAddress, todoABI, signer);
+    const Todo = new ethers.Contract(todoAddress, todoABI, signer);
 
     const _id = BigNumber.from(serialNumber - 1);
     const txn = await Todo.removeTask(_id);
     const receipt = await txn.wait(1);
 
-    if (receipt.status === 1) {
+    if (receipt.status == 1) {
       setVisibility(false);
     }
   }
 
-  async function changeStatus() {
-    // const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
-    // await provider.send("eth_requestAccounts", []);
-    // const signer = provider.getSigner();
+  const changeStatus = async () => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+    await provider.send("eth_requestAccounts", []);
+    const signer = provider.getSigner();
 
-    // const Todo = new ethers.Contract(todoAddress, todoABI, signer);
+    const todo = new ethers.Contract(todoAddress, todoABI, signer);
 
     const _id = BigNumber.from(serialNumber - 1);
-    const txn = await Todo.invertStatus(_id);
+    const txn = await todo.invertStatus(_id);
     const receipt = await txn.wait(1);
 
-    if (receipt.status === 1) {
-      setStatus(!status);
+    if (receipt) {
+      console.log(receipt);
+      if (receipt.status == 1) {
+        setStatus(!status);
+      }
     }
-  }
+  };
 
-  async function updateState() {
+  function updateState() {
     const sn = props.data[0].toNumber();
     setSerialNumber(sn + 1);
 
@@ -83,9 +85,10 @@ export default function Card(props) {
       );
       await provider.send("eth_requestAccounts", []);
       const signer = provider.getSigner();
+
       Todo = new ethers.Contract(todoAddress, todoABI, signer);
 
-      await updateState();
+      updateState();
     }
 
     execute();
@@ -110,14 +113,6 @@ export default function Card(props) {
                 : { border: "2px solid #fbbb54" }
             }
           >
-            {/* <h2
-              style={{
-                display: "inline-block",
-                marginBottom: "20px",
-              }}
-            >
-              {serialNumber}
-            </h2> */}
             <p style={{ float: "right" }}>{timeStamp}</p>
             <p
               style={{
@@ -133,19 +128,16 @@ export default function Card(props) {
             </p>
 
             {status ? (
-              <button
-                className="taskStatusCompleted"
-                onClick={() => changeStatus()}
-              >
+              <button className="taskStatusCompleted" onClick={changeStatus}>
                 Completed
               </button>
             ) : (
-              <button className="taskStatus" onClick={() => changeStatus()}>
+              <button className="taskStatus" onClick={changeStatus}>
                 Pending
               </button>
             )}
             <button onClick={() => deleteTask()} className="binButton">
-              <Image src={bin} height={20} width={20} />
+              <Image alt="Bin" src={bin} height={20} width={20} />
             </button>
           </motion.div>
         </>

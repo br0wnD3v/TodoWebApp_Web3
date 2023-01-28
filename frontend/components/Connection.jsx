@@ -1,11 +1,11 @@
 import { useState, useEffect, useContext } from "react";
-import { SignerContext } from "../contexts/context";
+import { ChainContext, SignerContext } from "../contexts/context";
 
 import { ethers } from "ethers";
 
 export default function Connection() {
   const { setSigner } = useContext(SignerContext);
-  const [onHardhat, setOnHardhat] = useState(false);
+  const { onHardhat, setOnHardhat } = useContext(ChainContext);
 
   const targetNetworkId = "31337";
 

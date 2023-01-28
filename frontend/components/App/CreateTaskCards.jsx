@@ -3,7 +3,7 @@ import Card from "./Card";
 export default function CreateTaskCards(props) {
   var elements = [];
   const mode = props.mode;
-
+  console.log(mode);
   // 0 - Serial Number
   // 1 - Task
   // 2 - Timestamp

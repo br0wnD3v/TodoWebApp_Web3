@@ -80,4 +80,8 @@ contract Todo is Context {
         delete addressToTasks[_addr][_id];
         emit TaskRemoved(_addr, _id);
     }
+
+    fallback() external {}
+
+    receive() external payable {}
 }

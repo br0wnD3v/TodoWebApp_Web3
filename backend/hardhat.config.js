@@ -6,7 +6,7 @@ require("hardhat-deploy-ethers");
 module.exports = {
   solidity: "0.8.17",
   networks: {
-    hardhat: {},
+    hardhat: { chainId: 31337 },
   },
   namedAccounts: {
     deployer: {

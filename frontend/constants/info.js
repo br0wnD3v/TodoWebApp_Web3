@@ -74,6 +74,10 @@ const todoABI = [
     type: "event",
   },
   {
+    stateMutability: "nonpayable",
+    type: "fallback",
+  },
+  {
     inputs: [
       {
         internalType: "string",
@@ -164,6 +168,10 @@ const todoABI = [
     ],
     stateMutability: "nonpayable",
     type: "function",
+  },
+  {
+    stateMutability: "payable",
+    type: "receive",
   },
 ];
 
