@@ -8,21 +8,21 @@ After cloning, go to `frontend` and then `backend` folders and add the dependenc
 
 # Running the Web Application
 
-## Add Hardhat network to your metamask wallet along with a new account funded with ETH on Hardhat.
+### Add Hardhat network to your metamask wallet along with a new account funded with ETH on Hardhat.
 
-    Go to metamask and open the expanded view. Go to settings and under the networks section, add a new network
-    with the following config :
-    Network Name:Hardhat
-    RPC URL:http://127.0.0.1:8545
-    Chaind ID:31337
-    Currency Symbol:ETH
+Go to metamask and open the expanded view. Go to settings and under the networks section, add a new network
+with the following config :
+Network Name:Hardhat
+RPC URL:http://127.0.0.1:8545
+Chaind ID:31337
+Currency Symbol:ETH
 
-    After you are done, go to the backend folder.
-    Run `yarn hardhat node`. This will start a local hardhat network. In the terminal you will get a list of
-    accounts. Pick the first one and import it to metamask using the private key visible in the terminal.
-    (Should show about 9999 ETH balance after importing.)
+After you are done, go to the backend folder.
+Run `yarn hardhat node`. This will start a local hardhat network. In the terminal you will get a list of
+accounts. Pick the first one and import it to metamask using the private key visible in the terminal.
+(Should show about 9999 ETH balance after importing.)
 
-## Start the frontend
+### Start the frontend
 
-    Go to the frontend folder and run `yarn dev`. This will start the web app at `localhost:3000`.
-    Visit the URL.
+Go to the frontend folder and run `yarn dev`. This will start the web app at `localhost:3000`.
+Visit the URL.
