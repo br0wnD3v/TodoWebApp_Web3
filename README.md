@@ -26,3 +26,5 @@ accounts. Pick the first one and import it to metamask using the private key vis
 
 Go to the frontend folder and run `yarn dev`. This will start the web app at `localhost:3000`.
 Visit the URL.
+
+This is a test commit
