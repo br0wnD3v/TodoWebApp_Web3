@@ -12,10 +12,10 @@ After cloning, go to `frontend` and then `backend` folders and add the dependenc
 
 Go to metamask and open the expanded view. Go to settings and under the networks section, add a new network
 with the following config :
-`Network Name:Hardhat
-RPC URL:http://127.0.0.1:8545
-Chaind ID:31337
-Currency Symbol:ETH`
+`Network Name:Hardhat`
+`RPC URL:http://127.0.0.1:8545`
+`Chaind ID:31337`
+`Currency Symbol:ETH`
 
 After you are done, go to the backend folder.
 Run `yarn hardhat node`. This will start a local hardhat network. In the terminal you will get a list of
